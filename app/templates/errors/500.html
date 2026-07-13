@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Something Went Wrong - Levvi's Furniture{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto px-4 py-32 text-center reveal">
+    <p class="text-xs tracking-[0.3em] text-navy mb-6">OUR APOLOGIES</p>
+    <h1 class="text-7xl italic mb-6 text-navy/20">500</h1>
+    <p class="text-navy/60 mb-10">
+        Something went wrong on our end. Please try again shortly.
+    </p>
+    <a href="{{ url_for('main.home') }}"
+       class="inline-block bg-navy text-white px-8 py-3.5 rounded-full font-medium hover:bg-navy/90 transition">
+        Back to Home
+    </a>
+</div>
+{% endblock %}

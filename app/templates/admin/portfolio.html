@@ -1,0 +1,33 @@
+{% extends 'admin/base.html' %}
+{% block title %}Manage Portfolio{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-10">
+    <div class="flex justify-between items-center mt-4 mb-6">
+        <h1 class="text-2xl">Manage Portfolio</h1>
+        <a href="{{ url_for('admin.add_project') }}"
+           class="bg-navy text-white px-4 py-2 rounded-full text-sm hover:bg-navy/90 transition">
+            + Add Project
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {% for project in projects %}
+        <div class="bg-white rounded-lg p-4">
+            <h3 class="font-medium">{{ project.title }}</h3>
+            <p class="text-xs text-navy/40 mb-2">
+                {{ project.completion_date.strftime('%b %Y') if project.completion_date else 'No date set' }}
+            </p>
+            <div class="flex gap-3 text-sm">
+                <a href="{{ url_for('admin.edit_project', project_id=project.id) }}" class="text-navy hover:underline">Edit</a>
+                <form method="POST" action="{{ url_for('admin.delete_project', project_id=project.id) }}"
+                      onsubmit="return confirm('Delete this project?');">
+                    <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-navy/30 col-span-2 text-center py-6">No projects yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

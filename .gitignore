@@ -1,0 +1,26 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Instance folder (contains your local SQLite database)
+instance/
+
+# Environment variables / secrets
+.env
+
+# VS Code settings
+.vscode/
+
+# OS-specific junk files
+.DS_Store
+Thumbs.db
+
+# Node / Tailwind build tooling
+node_modules/
+
+# Uploaded product images (user-generated content, not source code)
+app/static/uploads/*
+!app/static/uploads/.gitkeep

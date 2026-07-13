@@ -1,0 +1,51 @@
+{% extends 'admin/base.html' %}
+{% block title %}{{ 'Edit' if project else 'Add' }} Project{% endblock %}
+{% block content %}
+<div class="max-w-xl mx-auto px-4 py-10">
+    <h1 class="text-2xl mt-4 mb-6">{{ 'Edit' if project else 'Add' }} Project</h1>
+
+    <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg p-6 space-y-4">
+        <div>
+            <label class="block text-sm mb-1">Title</label>
+            <input type="text" name="title" required value="{{ project.title if project else '' }}"
+                   class="w-full border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+        </div>
+
+        <div>
+            <label class="block text-sm mb-1">Description</label>
+            <textarea name="description" rows="3"
+                      class="w-full border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">{{ project.description if project else '' }}</textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm mb-1">Before Image</label>
+                {% if project and project.before_image %}
+                <img src="{{ project.before_image }}" class="w-full h-24 object-cover rounded mb-1">
+                {% endif %}
+                <input type="file" name="before_image" accept="image/*"
+                       class="w-full border border-navy/20 rounded px-3 py-2 text-xs">
+            </div>
+            <div>
+                <label class="block text-sm mb-1">After Image</label>
+                {% if project and project.after_image %}
+                <img src="{{ project.after_image }}" class="w-full h-24 object-cover rounded mb-1">
+                {% endif %}
+                <input type="file" name="after_image" accept="image/*"
+                       class="w-full border border-navy/20 rounded px-3 py-2 text-xs">
+            </div>
+        </div>
+
+        <div>
+            <label class="block text-sm mb-1">Completion Date</label>
+            <input type="date" name="completion_date"
+                   value="{{ project.completion_date.isoformat() if project and project.completion_date else '' }}"
+                   class="w-full border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+        </div>
+
+        <button type="submit" class="w-full bg-navy text-white py-3 rounded-full font-medium hover:bg-navy/90 transition">
+            {{ 'Update' if project else 'Add' }} Project
+        </button>
+    </form>
+</div>
+{% endblock %}

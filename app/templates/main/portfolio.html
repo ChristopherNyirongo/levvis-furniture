@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% block title %}Interior Design Portfolio - Levvi's Furniture{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-16">
+
+    <div class="text-center mb-14 reveal">
+        <p class="text-xs tracking-[0.3em] text-navy mb-3">OUR WORK</p>
+        <h1 class="text-4xl md:text-5xl italic">Interior Design Portfolio</h1>
+    </div>
+
+    {% if projects %}
+    <div class="columns-1 md:columns-2 gap-6 space-y-6">
+        {% for project in projects %}
+        <div class="break-inside-avoid reveal" style="transition-delay: {{ loop.index0 * 80 }}ms">
+
+            <!-- Before/After Slider -->
+            <div class="relative overflow-hidden select-none ba-slider" data-project="{{ project.id }}">
+                <div class="relative h-72 md:h-80">
+                    {% if project.after_image %}
+                    <img src="{{ project.after_image }}" class="absolute inset-0 w-full h-full object-cover" draggable="false">
+                    {% else %}
+                    <div class="absolute inset-0 bg-navy/5 flex items-center justify-center text-navy/20 text-sm">No After Image</div>
+                    {% endif %}
+
+                    <div class="ba-before-wrap absolute inset-0 overflow-hidden" style="width: 50%;">
+                        {% if project.before_image %}
+                        <img src="{{ project.before_image }}" class="w-full h-full object-cover ba-before-img" draggable="false">
+                        {% else %}
+                        <div class="w-full h-full bg-navy/10 flex items-center justify-center text-navy/20 text-sm">No Before Image</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="ba-handle absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize flex items-center justify-center" style="left: 50%;">
+                        <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg -ml-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-navy" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l-4 4 4 4m8-8l4 4-4 4" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <span class="absolute top-3 left-3 text-[10px] tracking-[0.15em] bg-navy/80 text-white px-2.5 py-1 rounded-full pointer-events-none">BEFORE</span>
+                    <span class="absolute top-3 right-3 text-[10px] tracking-[0.15em] bg-navy/90 text-white px-2.5 py-1 rounded-full pointer-events-none">AFTER</span>
+                </div>
+            </div>
+
+            <div class="pt-4">
+                <h3 class="text-xl mb-1">{{ project.title }}</h3>
+                {% if project.description %}
+                <p class="text-sm text-navy/60 mb-1">{{ project.description }}</p>
+                {% endif %}
+                <p class="text-xs text-navy/40">
+                    {{ 'Completed — ' + project.completion_date.strftime('%B %Y') if project.completion_date else '' }}
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <p class="text-center text-navy/40 reveal">No projects yet — check back soon.</p>
+    {% endif %}
+
+</div>
+
+<script>
+    document.querySelectorAll('.ba-slider').forEach(slider => {
+        const handle = slider.querySelector('.ba-handle');
+        const beforeWrap = slider.querySelector('.ba-before-wrap');
+        const beforeImg = slider.querySelector('.ba-before-img');
+        let dragging = false;
+
+        function setPosition(percent) {
+            percent = Math.max(0, Math.min(100, percent));
+            beforeWrap.style.width = percent + '%';
+            handle.style.left = percent + '%';
+            if (beforeImg) {
+                beforeImg.style.width = (100 / (percent / 100)) + '%';
+            }
+        }
+
+        function moveFromEvent(e) {
+            const rect = slider.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const percent = ((clientX - rect.left) / rect.width) * 100;
+            setPosition(percent);
+        }
+
+        handle.addEventListener('mousedown', () => dragging = true);
+        handle.addEventListener('touchstart', () => dragging = true);
+
+        window.addEventListener('mouseup', () => dragging = false);
+        window.addEventListener('touchend', () => dragging = false);
+
+        window.addEventListener('mousemove', (e) => { if (dragging) moveFromEvent(e); });
+        window.addEventListener('touchmove', (e) => { if (dragging) moveFromEvent(e); });
+
+        slider.addEventListener('click', (e) => {
+            if (e.target === handle || handle.contains(e.target)) return;
+            moveFromEvent(e);
+        });
+    });
+</script>
+{% endblock %}

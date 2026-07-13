@@ -1,0 +1,309 @@
+{% extends 'base.html' %}
+{% block title %}{{ product.name }} - Levvi's Furniture{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-16">
+
+    <p class="text-xs text-navy/50 mb-8">
+        <a href="{{ url_for('main.home') }}" class="hover:text-navy">Home</a>
+        <span class="mx-1">›</span>
+        <a href="{{ url_for('products.list_products') }}" class="hover:text-navy">Shop</a>
+        <span class="mx-1">›</span>
+        <span>{{ product.name }}</span>
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12 reveal">
+
+        <!-- Gallery -->
+        <div>
+            {% set all_images = ([product.featured_image] if product.featured_image else []) + product.images | map(attribute='image_url') | list %}
+
+            {% if all_images %}
+            <div class="relative group/gallery">
+                <div id="gallery-track" class="flex overflow-x-auto snap-x snap-mandatory gallery-scroll" style="scroll-behavior: smooth;">
+                    {% for img_url in all_images %}
+                    <div class="min-w-full snap-center flex-shrink-0 h-[420px] md:h-[520px] flex items-center justify-center">
+                        <div class="gallery-loader w-full h-full flex items-center justify-center">
+                            <div class="w-8 h-8 border-2 border-navy/10 border-t-navy/40 rounded-full animate-spin"></div>
+                        </div>
+                        <button onclick="openLightbox({{ loop.index0 }})" class="hidden gallery-img-wrap w-full h-full items-center justify-center">
+                            <img src="{{ img_url }}" alt="{{ product.name }} — image {{ loop.index }}"
+                                 loading="lazy"
+                                 onload="this.closest('.snap-center').querySelector('.gallery-loader').classList.add('hidden'); this.closest('.snap-center').querySelector('.gallery-img-wrap').classList.remove('hidden'); this.closest('.snap-center').querySelector('.gallery-img-wrap').classList.add('flex'); this.classList.add('opacity-100')"
+                                 class="max-w-full max-h-full object-contain opacity-0 transition-opacity duration-300">
+                        </button>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                {% if all_images|length > 1 %}
+                <button onclick="scrollGallery(-1)" aria-label="Previous image"
+                        class="hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 items-center justify-center text-navy opacity-0 group-hover/gallery:opacity-100 transition-opacity duration-250 hover:bg-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <button onclick="scrollGallery(1)" aria-label="Next image"
+                        class="hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 items-center justify-center text-navy opacity-0 group-hover/gallery:opacity-100 transition-opacity duration-250 hover:bg-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
+
+                <div class="flex justify-center gap-1.5 mt-4">
+                    {% for img_url in all_images %}
+                    <div class="w-1.5 h-1.5 rounded-full bg-navy/20 gallery-dot" data-index="{{ loop.index0 }}"></div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="h-[420px] md:h-[520px] flex items-center justify-center text-navy/20">No Image Available</div>
+            {% endif %}
+        </div>
+
+        <!-- Details -->
+        <div>
+            <p class="text-xs tracking-[0.15em] text-navy/40 mb-2">{{ product.category.name.upper() }}</p>
+            <h1 class="text-3xl md:text-4xl mb-3">{{ product.name }}</h1>
+            <p class="text-xl text-navy mb-6">
+                {% if product.price %}K {{ '{:,.2f}'.format(product.price) }}{% else %}Contact for Pricing{% endif %}
+            </p>
+
+            <p class="text-navy/70 leading-relaxed mb-8">{{ product.description }}</p>
+
+            {% if product.colours %}
+            <div class="mb-8">
+                <p class="text-xs tracking-[0.15em] text-navy/40 mb-2">COLOUR</p>
+                <p class="text-sm">{{ product.colours }}</p>
+            </div>
+            {% endif %}
+
+            <table class="w-full text-sm mb-8 border-t border-navy/10">
+                <tbody>
+                    <tr class="border-b border-navy/10">
+                        <td class="py-3 text-navy/50">Material</td>
+                        <td class="py-3 text-right">{{ product.material or 'N/A' }}</td>
+                    </tr>
+                    <tr class="border-b border-navy/10">
+                        <td class="py-3 text-navy/50">Size</td>
+                        <td class="py-3 text-right">{{ product.size_label or product.dimensions or 'N/A' }}</td>
+                    </tr>
+                    <tr class="border-b border-navy/10">
+                        <td class="py-3 text-navy/50">Availability</td>
+                        <td class="py-3 text-right">{{ 'In Stock' if product.is_available else 'Made to Order' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="bg-navy/5 rounded-xl p-4 text-sm text-navy/60 mb-8">
+                Delivery available across Lusaka. Contact us for delivery to other regions.
+            </div>
+
+            <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20the%20{{ product.name | urlencode }}."
+               target="_blank"
+               class="block text-center bg-navy text-white px-6 py-3.5 rounded-full font-medium hover:bg-navy/90 transition">
+                Chat on WhatsApp
+            </a>
+        </div>
+    </div>
+
+    {% if related_products %}
+    <div class="mt-24 reveal">
+        <h2 class="text-2xl mb-8 text-center">You Might Also Like</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {% for rp in related_products %}
+            <a href="{{ url_for('products.product_detail', product_id=rp.id) }}" class="group">
+                <div class="h-40 flex items-center justify-center">
+                    {% if rp.featured_image %}
+                    <img src="{{ rp.featured_image }}" loading="lazy" class="max-w-full max-h-full object-contain transition-transform duration-500 group-hover:scale-105">
+                    {% else %}
+                    <div class="text-navy/20 text-xs">No Image</div>
+                    {% endif %}
+                </div>
+                <p class="text-sm mt-3 text-center">{{ rp.name }}</p>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if avg_rating or recent_reviews %}
+    <div id="reviews" class="mt-24 max-w-2xl mx-auto scroll-mt-24 reveal">
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h2 class="text-2xl">Reviews</h2>
+                {% if avg_rating %}
+                <p class="text-sm text-navy/50 mt-1">
+                    <span class="text-navy">{{ '★' * (avg_rating|round|int) }}{{ '☆' * (5 - (avg_rating|round|int)) }}</span>
+                    {{ avg_rating }} out of 5 &middot; {{ review_count }} review{{ 's' if review_count != 1 }}
+                </p>
+                {% else %}
+                <p class="text-sm text-navy/50 mt-1">No reviews yet</p>
+                {% endif %}
+            </div>
+            <button onclick="document.getElementById('review-form').classList.toggle('hidden')"
+                    class="text-sm border border-navy/20 rounded-full px-5 py-2 hover:bg-navy hover:text-white transition">
+                Write a Review
+            </button>
+        </div>
+
+        {% for r in recent_reviews %}
+        <div class="bg-white rounded-xl p-5 mb-4 shadow-sm">
+            <div class="text-navy mb-2">{{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}</div>
+            <p class="text-navy/70 italic mb-3">"{{ r.review }}"</p>
+            <div class="flex justify-between text-xs text-navy/40">
+                <span>{{ r.customer_name }}</span>
+                <span>{{ r.date.strftime('%d %b %Y') }}</span>
+            </div>
+        </div>
+        {% endfor %}
+
+        <form id="review-form" method="POST" action="{{ url_for('products.submit_review', product_id=product.id) }}"
+              class="hidden bg-white rounded-xl p-6 mt-4 space-y-4">
+            <div>
+                <label class="block text-sm mb-1">Your Name</label>
+                <input type="text" name="customer_name" required class="w-full border border-navy/20 rounded-lg px-3 py-2 text-sm">
+            </div>
+            <div>
+                <label class="block text-sm mb-1">Rating</label>
+                <select name="rating" class="w-full border border-navy/20 rounded-lg px-3 py-2 text-sm">
+                    <option value="5">★★★★★ Excellent</option>
+                    <option value="4">★★★★☆ Good</option>
+                    <option value="3">★★★☆☆ Average</option>
+                    <option value="2">★★☆☆☆ Poor</option>
+                    <option value="1">★☆☆☆☆ Very Poor</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm mb-1">Your Review</label>
+                <textarea name="review" rows="3" required class="w-full border border-navy/20 rounded-lg px-3 py-2 text-sm"></textarea>
+            </div>
+            <button type="submit" class="w-full bg-navy text-white py-3 rounded-full font-medium hover:bg-navy/90 transition">
+                Submit Review
+            </button>
+        </form>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Fullscreen Lightbox -->
+<div id="product-lightbox" class="hidden fixed inset-0 bg-navy z-[70] flex items-center justify-center opacity-0 transition-opacity duration-300">
+    <button onclick="closeLightbox()" class="absolute top-6 right-6 text-white/70 hover:text-white z-10" aria-label="Close">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
+
+    <button onclick="lightboxNav(-1)" aria-label="Previous"
+            class="absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+    <button onclick="lightboxNav(1)" aria-label="Next"
+            class="absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white z-10">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7" />
+        </svg>
+    </button>
+
+    <div id="lightbox-viewport" class="w-full h-full flex items-center justify-center overflow-hidden touch-none">
+        <img id="lightbox-img" src="" alt="" class="max-w-[92vw] max-h-[85vh] object-contain transition-transform duration-200"
+             style="transform: scale(1); cursor: zoom-in;">
+    </div>
+
+    <p class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/50 text-xs">Tap image to zoom &middot; Swipe to navigate</p>
+</div>
+
+<script>
+    const galleryImages = {{ all_images | tojson if all_images else '[]' }};
+    let lightboxIndex = 0;
+    let zoomed = false;
+
+    function scrollGallery(direction) {
+        const track = document.getElementById('gallery-track');
+        track.scrollBy({ left: direction * track.offsetWidth, behavior: 'smooth' });
+    }
+
+    function updateDots() {
+        const track = document.getElementById('gallery-track');
+        const index = Math.round(track.scrollLeft / track.offsetWidth);
+        document.querySelectorAll('.gallery-dot').forEach((dot, i) => {
+            dot.classList.toggle('bg-navy', i === index);
+            dot.classList.toggle('bg-navy/20', i !== index);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const track = document.getElementById('gallery-track');
+        if (track) {
+            track.addEventListener('scroll', () => {
+                clearTimeout(track._scrollTimer);
+                track._scrollTimer = setTimeout(updateDots, 100);
+            });
+            updateDots();
+        }
+    });
+
+    function openLightbox(index) {
+        lightboxIndex = index;
+        zoomed = false;
+        const lb = document.getElementById('product-lightbox');
+        const img = document.getElementById('lightbox-img');
+        img.src = galleryImages[index];
+        img.style.transform = 'scale(1)';
+        img.style.cursor = 'zoom-in';
+        lb.classList.remove('hidden');
+        requestAnimationFrame(() => lb.classList.remove('opacity-0'));
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+        const lb = document.getElementById('product-lightbox');
+        lb.classList.add('opacity-0');
+        setTimeout(() => lb.classList.add('hidden'), 300);
+        document.body.style.overflow = '';
+    }
+
+    function lightboxNav(direction) {
+        lightboxIndex = (lightboxIndex + direction + galleryImages.length) % galleryImages.length;
+        zoomed = false;
+        const img = document.getElementById('lightbox-img');
+        img.style.opacity = '0';
+        setTimeout(() => {
+            img.src = galleryImages[lightboxIndex];
+            img.style.transform = 'scale(1)';
+            img.style.cursor = 'zoom-in';
+            img.style.opacity = '1';
+        }, 150);
+    }
+
+    document.getElementById('lightbox-img').addEventListener('click', function() {
+        zoomed = !zoomed;
+        this.style.transform = zoomed ? 'scale(2)' : 'scale(1)';
+        this.style.cursor = zoomed ? 'zoom-out' : 'zoom-in';
+    });
+
+    document.addEventListener('keydown', (e) => {
+        const lb = document.getElementById('product-lightbox');
+        if (lb.classList.contains('hidden')) return;
+        if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') lightboxNav(-1);
+        if (e.key === 'ArrowRight') lightboxNav(1);
+    });
+
+    (function() {
+        let touchStartX = 0;
+        const viewport = document.getElementById('lightbox-viewport');
+        viewport.addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        viewport.addEventListener('touchend', (e) => {
+            const diff = e.changedTouches[0].clientX - touchStartX;
+            if (Math.abs(diff) > 50 && !zoomed) {
+                lightboxNav(diff < 0 ? 1 : -1);
+            }
+        }, { passive: true });
+    })();
+</script>
+{% endblock %}

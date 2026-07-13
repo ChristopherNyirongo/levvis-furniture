@@ -1,0 +1,31 @@
+{% extends 'admin/base.html' %}
+{% block title %}Manage Images - {{ product.name }}{% endblock %}
+{% block content %}
+<div class="max-w-3xl mx-auto px-4 py-10">
+    <h1 class="text-2xl mt-4 mb-1">{{ product.name }}</h1>
+    <p class="text-sm text-navy/50 mb-6">Manage gallery images</p>
+
+    <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg p-6 mb-8">
+        <label class="block text-sm mb-2">Add Images (you can select multiple)</label>
+        <input type="file" name="images" multiple accept="image/png, image/jpeg, image/webp"
+               class="w-full border border-navy/20 rounded px-3 py-2 text-sm mb-4">
+        <button type="submit" class="bg-navy text-white px-4 py-2 rounded-full text-sm hover:bg-navy/90 transition">
+            Upload
+        </button>
+    </form>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {% for img in product.images %}
+        <div class="bg-white rounded-lg overflow-hidden">
+            <img src="{{ img.image_url }}" class="w-full h-32 object-cover">
+            <form method="POST" action="{{ url_for('admin.delete_product_image', image_id=img.id) }}"
+                  onsubmit="return confirm('Remove this image?');" class="p-2">
+                <button type="submit" class="text-xs text-red-500 hover:underline">Delete</button>
+            </form>
+        </div>
+        {% else %}
+        <p class="text-navy/30 col-span-3 text-center py-6">No gallery images yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

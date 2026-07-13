@@ -1,0 +1,32 @@
+{% extends 'admin/base.html' %}
+{% block title %}Manage Categories{% endblock %}
+{% block content %}
+<div class="max-w-2xl mx-auto px-4 py-10">
+    <h1 class="text-2xl mt-4 mb-6">Manage Categories</h1>
+
+    <form method="POST" action="{{ url_for('admin.add_category') }}" class="flex gap-2 mb-8">
+        <input type="text" name="name" placeholder="New category name" required
+               class="flex-grow border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+        <button type="submit" class="bg-navy text-white px-4 py-2 rounded-full text-sm hover:bg-navy/90 transition">
+            Add
+        </button>
+    </form>
+
+    <div class="bg-white rounded-lg divide-y divide-navy/10">
+        {% for category in categories %}
+        <div class="flex justify-between items-center p-4">
+            <div>
+                <span class="font-medium">{{ category.name }}</span>
+                <span class="text-xs text-navy/40 ml-2">({{ category.products | length }} products)</span>
+            </div>
+            <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}"
+                  onsubmit="return confirm('Delete this category?');">
+                <button type="submit" class="text-red-500 text-sm hover:underline">Delete</button>
+            </form>
+        </div>
+        {% else %}
+        <p class="p-6 text-center text-navy/30">No categories yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard - Levvi's Admin{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-2xl font-semibold mb-1">Dashboard</h1>
+    <p class="text-sm text-navy/50">Overview of your store's activity.</p>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-10">
+    <div class="admin-card bg-white rounded-2xl p-6 shadow-sm">
+        <p class="text-3xl font-display font-semibold">{{ stats.total_products }}</p>
+        <p class="text-sm text-navy/50 mt-1">Total Products</p>
+    </div>
+    <div class="admin-card bg-white rounded-2xl p-6 shadow-sm">
+        <p class="text-3xl font-display font-semibold">{{ stats.total_categories }}</p>
+        <p class="text-sm text-navy/50 mt-1">Categories</p>
+    </div>
+    <div class="admin-card bg-white rounded-2xl p-6 shadow-sm">
+        <p class="text-3xl font-display font-semibold">{{ stats.total_projects }}</p>
+        <p class="text-sm text-navy/50 mt-1">Portfolio Projects</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <a href="{{ url_for('admin.add_product') }}" class="admin-btn bg-navy text-white rounded-2xl p-6 hover:bg-navy/90">
+        <h3 class="font-medium mb-1">+ Add New Product</h3>
+        <p class="text-sm text-white/60">List a new item in your catalogue</p>
+    </a>
+    <a href="{{ url_for('admin.manage_categories') }}" class="admin-card bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-medium mb-1">Manage Categories</h3>
+        <p class="text-sm text-navy/50">Organize your product catalogue</p>
+    </a>
+    <a href="{{ url_for('admin.add_project') }}" class="admin-card bg-white rounded-2xl p-6 shadow-sm">
+        <h3 class="font-medium mb-1">Add Portfolio Project</h3>
+        <p class="text-sm text-navy/50">Showcase your latest interior design work</p>
+    </a>
+</div>
+{% endblock %}

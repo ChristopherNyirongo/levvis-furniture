@@ -1,0 +1,17 @@
+{
+  "name": "levvis_furniture",
+  "version": "1.0.0",
+  "description": "",
+  "main": "tailwind.config.js",
+ "scripts": {
+    "build-css": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/output.css",
+    "watch-css": "tailwindcss -i ./app/static/css/input.css -o ./app/static/css/output.css --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "tailwindcss": "^3.4.19"
+  }
+}

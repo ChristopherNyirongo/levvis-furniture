@@ -1,0 +1,48 @@
+{% extends 'admin/base.html' %}
+{% block title %}Manage Gallery{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-10">
+    <h1 class="text-2xl mt-4 mb-6">Manage Gallery</h1>
+
+    <form method="POST" action="{{ url_for('admin.add_gallery_image') }}" enctype="multipart/form-data"
+          class="bg-white rounded-lg p-6 space-y-4 mb-8">
+        <div>
+            <label class="block text-sm mb-1">Category</label>
+            <select name="category" required class="w-full border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+                {% for cat in categories %}
+                <option value="{{ cat }}">{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div>
+            <label class="block text-sm mb-1">Image</label>
+            <input type="file" name="image" accept="image/png, image/jpeg, image/webp" required
+                   class="w-full border border-navy/20 rounded px-3 py-2 text-sm">
+        </div>
+        <div>
+            <label class="block text-sm mb-1">Caption (optional)</label>
+            <input type="text" name="caption" class="w-full border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+        </div>
+        <button type="submit" class="bg-navy text-white px-4 py-2 rounded-full text-sm hover:bg-navy/90 transition">
+            Add to Gallery
+        </button>
+    </form>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+        {% for img in images %}
+        <div class="bg-white rounded-lg overflow-hidden">
+            <img src="{{ img.image_url }}" class="w-full h-32 object-cover">
+            <div class="p-2">
+                <p class="text-xs text-navy/50">{{ img.category }}</p>
+                <form method="POST" action="{{ url_for('admin.delete_gallery_image', image_id=img.id) }}"
+                      onsubmit="return confirm('Remove this image?');">
+                    <button type="submit" class="text-xs text-red-500 hover:underline mt-1">Delete</button>
+                </form>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-navy/30 col-span-3 text-center py-6">No images yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

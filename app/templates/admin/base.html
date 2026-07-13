@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin - Levvi's Furniture{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <style>
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+
+        #admin-sidebar { transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+        #admin-overlay { transition: opacity 0.3s ease; }
+
+        .admin-nav-link {
+            position: relative;
+            background-color: transparent;
+            color: rgba(255,255,255,0.85);
+            border-left: 3px solid transparent;
+            border-radius: 0 0.5rem 0.5rem 0;
+            transition: background-color 0.25s ease-in-out,
+                        color 0.25s ease-in-out,
+                        transform 0.25s ease-in-out,
+                        border-radius 0.25s ease-in-out;
+        }
+        .admin-nav-link:hover {
+            background-color: rgba(255,255,255,0.08);
+            color: #FFFFFF;
+            transform: translateX(3px);
+            border-radius: 0 0.75rem 0.75rem 0;
+        }
+        .admin-nav-link:hover .nav-icon {
+            transform: translateX(3px) scale(1.05);
+        }
+        .admin-nav-link.active {
+            background-color: transparent;
+            border-left-color: #FFFFFF;
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+        .nav-icon { transition: transform 0.25s ease-in-out; display: inline-block; }
+
+        .drawer-link {
+            opacity: 0;
+            transform: translateX(-14px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .drawer-link.drawer-link-visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        /* Skip animation entirely once already played this session */
+        .no-animate.drawer-link {
+            opacity: 1;
+            transform: translateX(0);
+            transition: none;
+        }
+
+        .admin-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .admin-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,16,36,0.08); }
+
+        .admin-btn { transition: transform 0.15s ease, background-color 0.2s ease; }
+        .admin-btn:active { transform: scale(0.97); }
+
+        input, select, textarea { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0A1024 !important;
+            box-shadow: 0 0 0 3px rgba(10,16,36,0.1);
+        }
+
+        tbody tr { transition: background-color 0.15s ease; }
+        tbody tr:hover { background-color: rgba(10,16,36,0.03); }
+
+        @keyframes toast-in-desktop {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        @keyframes toast-in-mobile {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .toast { animation: toast-in-mobile 0.3s ease; }
+        @media (min-width: 768px) {
+            .toast { animation: toast-in-desktop 0.3s ease; }
+        }
+    </style>
+</head>
+<body class="font-sans bg-gray-50 text-navy flex">
+
+    <div class="md:hidden fixed top-0 inset-x-0 bg-navy text-white flex items-center gap-3 px-4 py-3 z-50">
+        <button onclick="toggleAdminSidebar()" class="p-1" aria-label="Open menu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <span class="font-display font-semibold">Levvi's Admin</span>
+    </div>
+
+    <div id="admin-overlay" onclick="toggleAdminSidebar()"
+         class="hidden fixed inset-0 bg-navy/50 z-40 md:hidden opacity-0"></div>
+
+    <aside id="admin-sidebar"
+           class="fixed md:sticky top-0 left-0 h-screen w-64 bg-navy text-white flex flex-col z-50
+                  -translate-x-full md:translate-x-0">
+        <div class="px-6 py-6 border-b border-white/10 flex items-center justify-between">
+            <div>
+                <p class="font-display font-semibold text-lg">Levvi's Furniture</p>
+                <p class="text-xs text-white/40 mt-0.5">Admin Panel</p>
+            </div>
+            <button onclick="toggleAdminSidebar()" class="md:hidden text-white/60 hover:text-white" aria-label="Close menu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <nav class="flex-grow px-3 py-6 space-y-1 text-sm overflow-y-auto">
+            {% set nav_items = [
+                ('admin.dashboard', 'Dashboard'),
+                ('admin.manage_products', 'Products'),
+                ('admin.manage_categories', 'Categories'),
+                ('admin.manage_portfolio', 'Portfolio'),
+            ] %}
+            {% for endpoint, label in nav_items %}
+            <a href="{{ url_for(endpoint) }}"
+               class="admin-nav-link drawer-link {{ 'active' if request.endpoint == endpoint }} block px-3 py-2.5">
+                {{ label }}
+            </a>
+            {% endfor %}
+        </nav>
+
+        <div class="px-3 py-6 border-t border-white/10 space-y-1">
+            <a href="{{ url_for('main.home') }}"
+               class="admin-nav-link drawer-link block px-3 py-2.5 text-sm">
+                View Live Site
+            </a>
+            <a href="{{ url_for('auth.logout') }}"
+               class="admin-nav-link drawer-link block px-3 py-2.5 text-sm">
+                Log Out
+            </a>
+        </div>
+    </aside>
+
+    <div class="flex-grow min-w-0 pt-14 md:pt-0">
+        <main class="p-6 md:p-10 max-w-6xl mx-auto">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <div id="toast-container" class="fixed top-4 inset-x-4 md:inset-x-auto md:right-6 md:top-6 z-[60] space-y-2"></div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <script>
+        const flashedMessages = {{ messages|tojson }};
+        window.addEventListener('DOMContentLoaded', () => {
+            flashedMessages.forEach(([category, message], i) => {
+                setTimeout(() => showToast(message, category), i * 150);
+            });
+        });
+    </script>
+    {% endif %}
+    {% endwith %}
+
+    <script>
+        function showToast(message, category) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const isError = category === 'error';
+            toast.className = `toast px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${isError ? 'bg-red-600 text-white' : 'bg-navy text-white'}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function staggerNavLinks() {
+            const links = document.querySelectorAll('#admin-sidebar .drawer-link');
+            links.forEach((link, i) => {
+                link.classList.remove('drawer-link-visible');
+                setTimeout(() => link.classList.add('drawer-link-visible'), 50 * (i + 1));
+            });
+        }
+
+        function showNavLinksInstantly() {
+            document.querySelectorAll('#admin-sidebar .drawer-link').forEach(link => {
+                link.classList.add('no-animate', 'drawer-link-visible');
+            });
+        }
+
+        function toggleAdminSidebar() {
+            const sidebar = document.getElementById('admin-sidebar');
+            const overlay = document.getElementById('admin-overlay');
+            const links = document.querySelectorAll('#admin-sidebar .drawer-link');
+            const isOpen = !sidebar.classList.contains('-translate-x-full');
+
+            if (isOpen) {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+                document.body.style.overflow = '';
+            } else {
+                overlay.classList.remove('hidden');
+                requestAnimationFrame(() => overlay.classList.remove('opacity-0'));
+                sidebar.classList.remove('-translate-x-full');
+                document.body.style.overflow = 'hidden';
+
+                // Mobile drawer open always animates, per spec
+                links.forEach(link => link.classList.remove('no-animate', 'drawer-link-visible'));
+                staggerNavLinks();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const isDesktop = window.innerWidth >= 768;
+            const alreadyAnimated = sessionStorage.getItem('sidebarAnimated') === 'true';
+
+            if (isDesktop) {
+                if (alreadyAnimated) {
+                    // Subsequent page loads this session: show instantly, no replay
+                    showNavLinksInstantly();
+                } else {
+                    // First load this session: play the cascade once
+                    staggerNavLinks();
+                    sessionStorage.setItem('sidebarAnimated', 'true');
+                }
+            }
+            // On mobile, links start hidden until the drawer is opened (handled by toggleAdminSidebar)
+        });
+
+        (function() {
+            const sidebar = document.getElementById('admin-sidebar');
+            let touchStartX = 0;
+            let touchCurrentX = 0;
+
+            sidebar.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+            }, { passive: true });
+
+            sidebar.addEventListener('touchmove', (e) => {
+                touchCurrentX = e.touches[0].clientX;
+            }, { passive: true });
+
+            sidebar.addEventListener('touchend', () => {
+                const swipeDistance = touchCurrentX - touchStartX;
+                if (swipeDistance < -60) {
+                    toggleAdminSidebar();
+                }
+                touchStartX = 0;
+                touchCurrentX = 0;
+            });
+        })();
+    </script>
+</body>
+</html>

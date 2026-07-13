@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% block title %}Levvi's Furniture — Handmade in Lusaka{% endblock %}
+
+{% block content %}
+
+<section class="relative h-[85vh] min-h-[500px] bg-gradient-to-br from-navy via-navy to-navy/40 flex items-center justify-center text-center overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 20% 30%, white 1px, transparent 1px), radial-gradient(circle at 80% 70%, white 1px, transparent 1px); background-size: 60px 60px;"></div>
+
+    <div class="relative z-10 px-4 reveal">
+        <p class="text-xs tracking-[0.3em] text-white/60 mb-6">HANDCRAFTED FURNITURE STUDIO — LUSAKA, ZAMBIA</p>
+        <h1 class="font-display text-4xl md:text-6xl text-white italic mb-8 leading-tight max-w-3xl mx-auto">
+            Handmade in Lusaka.<br>Made to Live With.
+        </h1>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ url_for('products.list_products') }}"
+               class="bg-navy text-white px-8 py-3.5 rounded-full font-medium hover:bg-navy/90 transition">
+                Browse Collection
+            </a>
+            <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20your%20furniture."
+               target="_blank"
+               class="border-2 border-white/40 text-white px-8 py-3.5 rounded-full font-medium hover:bg-white/10 transition">
+                Chat on WhatsApp
+            </a>
+        </div>
+    </div>
+</section>
+
+<section class="max-w-7xl mx-auto px-4 py-24">
+    <div class="text-center mb-14 reveal">
+        <p class="text-xs tracking-[0.3em] text-navy mb-3">THE COLLECTION</p>
+        <h2 class="text-3xl md:text-4xl">Featured Pieces</h2>
+    </div>
+
+    {% if featured_products %}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {% for product in featured_products %}
+        <a href="{{ url_for('products.product_detail', product_id=product.id) }}"
+           class="reveal group" style="transition-delay: {{ loop.index0 * 80 }}ms">
+            <div class="aspect-square overflow-hidden">
+                {% if product.featured_image %}
+                    <img src="{{ product.featured_image }}" alt="{{ product.name }}"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                {% else %}
+                    <div class="w-full h-full flex items-center justify-center text-navy/20 text-sm">No Image</div>
+                {% endif %}
+            </div>
+            <div class="pt-4 text-center">
+                <p class="text-[10px] tracking-[0.15em] text-navy/40 mb-1">{{ product.category.name.upper() }}</p>
+                <h3 class="font-display text-lg">{{ product.name }}</h3>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-12 reveal">
+        <a href="{{ url_for('products.list_products') }}" class="text-sm border-b border-navy/30 hover:border-navy hover:text-navy transition pb-0.5">
+            View Full Collection
+        </a>
+    </div>
+    {% else %}
+    <p class="text-center text-navy/40 reveal">No products yet — check back soon.</p>
+    {% endif %}
+</section>
+
+{% if featured_project %}
+<section class="bg-white py-24">
+    <div class="max-w-6xl mx-auto px-4">
+        <div class="text-center mb-14 reveal">
+            <p class="text-xs tracking-[0.3em] text-navy mb-3">THE WORK</p>
+            <h2 class="text-3xl md:text-4xl">Interior Design, Reimagined</h2>
+        </div>
+
+        <div class="reveal grid grid-cols-1 md:grid-cols-2 gap-1">
+            <div class="relative h-72 overflow-hidden">
+                <span class="absolute top-4 left-4 text-[10px] tracking-[0.15em] bg-navy text-white px-3 py-1 rounded-full z-10">BEFORE</span>
+                {% if featured_project.before_image %}
+                <img src="{{ featured_project.before_image }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center text-navy/20 text-sm">No Image</div>
+                {% endif %}
+            </div>
+            <div class="relative h-72 overflow-hidden">
+                <span class="absolute top-4 left-4 text-[10px] tracking-[0.15em] bg-navy text-white px-3 py-1 rounded-full z-10">AFTER</span>
+                {% if featured_project.after_image %}
+                <img src="{{ featured_project.after_image }}" class="w-full h-full object-cover">
+                {% else %}
+                <div class="w-full h-full flex items-center justify-center text-navy/20 text-sm">No Image</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="text-center mt-8 reveal">
+            <h3 class="text-xl mb-2">{{ featured_project.title }}</h3>
+            <a href="{{ url_for('main.portfolio') }}" class="text-sm border-b border-navy/30 hover:border-navy hover:text-navy transition pb-0.5">
+                View Full Portfolio
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
+
+{% if testimonials %}
+<section class="max-w-7xl mx-auto px-4 py-24">
+    <div class="text-center mb-14 reveal">
+        <p class="text-xs tracking-[0.3em] text-navy mb-3">WHAT PEOPLE SAY</p>
+        <h2 class="text-3xl md:text-4xl">Customer Testimonials</h2>
+    </div>
+
+    <div class="flex gap-6 overflow-x-auto snap-x snap-mandatory gallery-scroll pb-4 reveal">
+        {% for t in testimonials %}
+        <div class="min-w-[280px] sm:min-w-[320px] snap-start bg-white rounded-lg p-6 flex-shrink-0 shadow-sm">
+            <div class="text-navy mb-3">{{ '★' * t.rating }}{{ '☆' * (5 - t.rating) }}</div>
+            <p class="text-navy/70 italic mb-4">"{{ t.review }}"</p>
+            <p class="text-sm font-medium">— {{ t.customer_name }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<section class="bg-navy py-16 text-center">
+    <div class="reveal max-w-2xl mx-auto px-4">
+        <h2 class="text-2xl md:text-3xl text-white mb-4">Have a piece in mind?</h2>
+        <p class="text-white/80 mb-8">Tell us what you're looking for and we'll help you bring it to life.</p>
+        <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20your%20furniture."
+           target="_blank"
+           class="inline-block bg-white text-navy px-8 py-3.5 rounded-full font-medium hover:bg-white/90 transition">
+            Chat on WhatsApp
+        </a>
+    </div>
+</section>
+
+{% endblock %}

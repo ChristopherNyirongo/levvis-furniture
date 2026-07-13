@@ -1,0 +1,58 @@
+{% extends 'admin/base.html' %}
+{% block title %}Quote Requests{% endblock %}
+{% block content %}
+<div class="max-w-5xl mx-auto px-4 py-10">
+    <h1 class="text-2xl mt-4 mb-6">Quote Requests</h1>
+
+    <div class="space-y-4">
+        {% for quote in quotes %}
+        <div class="bg-white rounded-lg p-5">
+            <div class="flex justify-between items-start mb-3">
+                <div>
+                    <p class="font-medium">{{ quote.customer_name }}</p>
+                    <p class="text-sm text-navy/50">{{ quote.phone_number }}{% if quote.email %} &middot; {{ quote.email }}{% endif %}</p>
+                </div>
+                <span class="text-xs px-2 py-1 rounded-full
+                    {% if quote.status == 'pending' %} bg-navy/10 text-navy
+                    {% elif quote.status == 'contacted' %} bg-navy/10 text-navy
+                    {% else %} bg-navy/10 text-navy
+                    {% endif %}">
+                    {{ quote.status | capitalize }}
+                </span>
+            </div>
+
+            <p class="text-sm mb-1">
+                <strong>Product:</strong> {{ quote.product.name if quote.product else 'General inquiry' }}
+                &middot; <strong>Qty:</strong> {{ quote.quantity }}
+            </p>
+            {% if quote.delivery_address %}
+            <p class="text-sm mb-1"><strong>Delivery:</strong> {{ quote.delivery_address }}</p>
+            {% endif %}
+            {% if quote.notes %}
+            <p class="text-sm text-navy/60 mb-3"><strong>Notes:</strong> {{ quote.notes }}</p>
+            {% endif %}
+            <p class="text-xs text-navy/40 mb-3">{{ quote.date_submitted.strftime('%d %b %Y, %I:%M %p') }}</p>
+
+            <div class="flex items-center gap-3">
+                <form method="POST" action="{{ url_for('admin.update_quote_status', quote_id=quote.id) }}" class="flex gap-2">
+                    <select name="status" class="border border-navy/20 rounded px-2 py-1 text-xs bg-transparent">
+                        <option value="pending" {% if quote.status == 'pending' %}selected{% endif %}>Pending</option>
+                        <option value="contacted" {% if quote.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                        <option value="closed" {% if quote.status == 'closed' %}selected{% endif %}>Closed</option>
+                    </select>
+                    <button type="submit" class="text-xs bg-navy text-white px-3 py-1 rounded-full hover:bg-navy/90">
+                        Update
+                    </button>
+                </form>
+                <a href="https://wa.me/{{ quote.phone_number | replace(' ', '') | replace('+', '') }}"
+                   target="_blank" class="text-xs text-navy hover:underline">
+                    message on WhatsApp
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <p class="text-center text-navy/30 py-10">No quote requests yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

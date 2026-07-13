@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block title %}{{ selected_category_obj.name if selected_category_obj else 'Collection' }} - Levvi's Furniture{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 py-16">
+
+    <div class="text-center mb-10 reveal">
+        <p class="text-xs text-navy/50 mb-3">
+            <a href="{{ url_for('main.home') }}" class="hover:text-navy">Home</a>
+            <span class="mx-1">›</span>
+            <a href="{{ url_for('products.list_products') }}" class="hover:text-navy">Shop</a>
+            {% if selected_category_obj %}
+            <span class="mx-1">›</span>
+            <span>{{ selected_category_obj.name }}</span>
+            {% endif %}
+        </p>
+        <h1 class="text-4xl md:text-5xl italic">{{ selected_category_obj.name if selected_category_obj else 'Collection' }}</h1>
+    </div>
+
+    <div class="border-t border-navy/10"></div>
+
+    <div class="flex flex-wrap items-center justify-between gap-4 py-5">
+        <button onclick="toggleFilters()"
+                class="flex items-center gap-2 border border-navy/20 rounded-full px-5 py-2 text-sm hover:border-navy hover:text-navy transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M6 12h12M9 18h6" />
+            </svg>
+            Filters
+        </button>
+
+        <div class="flex items-center gap-3 text-sm">
+            <label for="sort" class="text-navy/60">Sort By</label>
+            <select id="sort" onchange="applySort(this.value)"
+                    class="border border-navy/20 rounded-full px-4 py-2 text-sm bg-white focus:outline-none">
+                <option value="featured" {% if sort_by == 'featured' %}selected{% endif %}>Featured</option>
+                <option value="price_low" {% if sort_by == 'price_low' %}selected{% endif %}>Price: Low → High</option>
+                <option value="price_high" {% if sort_by == 'price_high' %}selected{% endif %}>Price: High → Low</option>
+                <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest</option>
+            </select>
+        </div>
+    </div>
+
+    <p class="text-sm text-navy/50 mb-8">{{ products|length }} Product{{ 's' if products|length != 1 }} Found</p>
+
+    <div class="flex gap-10">
+
+        <aside id="filter-drawer" class="hidden fixed inset-0 z-50 md:relative md:z-auto md:block md:w-64 md:flex-shrink-0">
+            <div onclick="toggleFilters()" class="fixed inset-0 bg-black/40 md:hidden"></div>
+            <div class="relative bg-white h-full md:h-auto w-72 md:w-full ml-auto md:ml-0 p-6 md:p-0 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6 md:hidden">
+                    <p class="font-medium">Filters</p>
+                    <button onclick="toggleFilters()">&times;</button>
+                </div>
+
+                <form method="GET" action="{{ url_for('products.list_products') }}" class="space-y-8">
+                    <input type="hidden" name="sort" value="{{ sort_by }}">
+
+                    <div>
+                        <p class="text-xs tracking-[0.15em] text-navy/40 mb-3">CATEGORY</p>
+                        <div class="space-y-2 text-sm">
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="category" value="" {% if not selected_category %}checked{% endif %}>
+                                All Categories
+                            </label>
+                            {% for cat in categories %}
+                            <label class="flex items-center gap-2">
+                                <input type="radio" name="category" value="{{ cat.id }}" {% if selected_category == cat.id %}checked{% endif %}>
+                                {{ cat.name }}
+                            </label>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-xs tracking-[0.15em] text-navy/40 mb-3">MATERIAL</p>
+                        <input type="text" name="material" value="{{ selected_material }}" placeholder="e.g. Mukwa, Pine"
+                               class="w-full border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+                    </div>
+
+                    <div>
+                        <p class="text-xs tracking-[0.15em] text-navy/40 mb-3">PRICE RANGE (K)</p>
+                        <div class="flex gap-2">
+                            <input type="number" name="min_price" value="{{ min_price or '' }}" placeholder="Min"
+                                   class="w-1/2 border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+                            <input type="number" name="max_price" value="{{ max_price or '' }}" placeholder="Max"
+                                   class="w-1/2 border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-xs tracking-[0.15em] text-navy/40 mb-3">SEARCH</p>
+                        <input type="text" name="q" value="{{ search_term }}" placeholder="Search products..."
+                               class="w-full border border-navy/20 rounded px-3 py-2 text-sm bg-transparent">
+                    </div>
+
+                    <button type="submit" class="w-full bg-navy text-white py-3 rounded-full text-sm hover:bg-navy/90 transition">
+                        Apply Filters
+                    </button>
+                    <a href="{{ url_for('products.list_products') }}" class="block text-center text-xs text-navy/50 hover:underline">
+                        Clear all
+                    </a>
+                </form>
+            </div>
+        </aside>
+
+        <div class="flex-grow">
+            {% if products %}
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-12">
+                {% for product in products %}
+                <div class="reveal group" style="transition-delay: {{ loop.index0 * 60 }}ms">
+                    <a href="{{ url_for('products.product_detail', product_id=product.id) }}" class="block relative">
+                        <div class="aspect-square relative overflow-hidden">
+                            {% if product.featured_image %}
+                                <img src="{{ product.featured_image }}" alt="{{ product.name }}"
+                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+                            {% else %}
+                                <div class="w-full h-full flex items-center justify-center text-navy/20 text-sm">No Image</div>
+                            {% endif %}
+
+                            <span class="absolute top-3 right-3 text-[10px] tracking-wide px-2.5 py-1 rounded-full
+                                {% if product.is_available %} bg-navy/90 text-white {% else %} bg-navy/90 text-white {% endif %}">
+                                {{ 'In Stock' if product.is_available else 'Made to Order' }}
+                            </span>
+
+                            <div class="absolute bottom-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20the%20{{ product.name | urlencode }}."
+                                   target="_blank" onclick="event.stopPropagation()"
+                                   class="bg-white rounded-full p-2.5 shadow hover:bg-navy hover:text-white transition" aria-label="Chat on WhatsApp">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.29-1.39a9.9 9.9 0 0 0 4.75 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Z"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="pt-4 text-center">
+                            <p class="text-[10px] tracking-[0.15em] text-navy/40 mb-1">{{ product.category.name.upper() }}</p>
+                            <h3 class="font-display text-lg mb-1">{{ product.name }}</h3>
+                            <p class="text-sm text-navy/60">
+                                {% if product.price %}K{{ '%.2f' | format(product.price) }}{% else %}Contact for price{% endif %}
+                            </p>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-center text-navy/40 py-20">No products match your filters. Try adjusting them.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleFilters() {
+        document.getElementById('filter-drawer').classList.toggle('hidden');
+    }
+    function applySort(value) {
+        const url = new URL(window.location);
+        url.searchParams.set('sort', value);
+        window.location = url;
+    }
+</script>
+{% endblock %}

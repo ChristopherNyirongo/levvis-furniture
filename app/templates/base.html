@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Levvi's Furniture{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <style>
+        h1, h2, h3 { font-family: 'Fraunces', serif; }
+        ::selection { background-color: #0A1024; color: #FFFFFF; }
+
+        #site-header { transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease; }
+        #site-header.scrolled {
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 1px 0 rgba(10, 16, 36, 0.08);
+        }
+
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute; left: 0; bottom: -4px;
+            width: 0; height: 1px; background-color: #0A1024;
+            transition: width 0.25s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+        .reveal {
+            opacity: 0; transform: translateY(24px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .reveal.revealed { opacity: 1; transform: translateY(0); }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+
+        .gallery-scroll::-webkit-scrollbar { display: none; }
+        .gallery-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+
+        #mobile-drawer { transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1); }
+        #mobile-overlay { transition: opacity 0.3s ease; }
+
+        .drawer-link {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.28s ease, transform 0.28s ease;
+        }
+        .drawer-link.drawer-link-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="font-sans bg-white text-navy">
+
+    <header id="site-header" class="sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+
+            <div class="flex items-center gap-3">
+                <button onclick="toggleMobileNav()" class="md:hidden p-1 -ml-1" aria-label="Open menu">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                <a href="{{ url_for('main.home') }}"
+                   class="font-display text-lg italic border border-navy/20 rounded-full px-4 py-1.5">
+                    Levvi's
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm tracking-wide">
+                <a href="{{ url_for('main.home') }}" class="nav-link">HOME</a>
+                <a href="{{ url_for('products.list_products') }}" class="nav-link">PRODUCTS</a>
+                <a href="{{ url_for('main.portfolio') }}" class="nav-link">PORTFOLIO</a>
+                <a href="{{ url_for('main.about') }}" class="nav-link">ABOUT</a>
+                <a href="{{ url_for('main.contact') }}" class="nav-link">CONTACT</a>
+            </nav>
+
+            <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20your%20furniture."
+               target="_blank"
+               class="text-sm bg-navy text-white rounded-full px-5 py-2 hover:bg-navy/90 transition">
+                Chat on WhatsApp
+            </a>
+        </div>
+    </header>
+
+    <div id="mobile-overlay" onclick="toggleMobileNav()"
+         class="hidden fixed inset-0 bg-navy/50 z-40 md:hidden opacity-0"></div>
+
+    <aside id="mobile-drawer"
+           class="fixed top-0 left-0 h-full w-72 bg-navy text-white z-50 -translate-x-full md:hidden flex flex-col">
+        <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
+            <span class="font-display text-lg italic">Levvi's Furniture</span>
+            <button onclick="toggleMobileNav()" class="text-white/70 hover:text-white" aria-label="Close menu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <nav class="flex-grow px-4 py-6 space-y-1 text-sm">
+            <a href="{{ url_for('main.home') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">HOME</a>
+            <a href="{{ url_for('products.list_products') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">PRODUCTS</a>
+            <a href="{{ url_for('main.portfolio') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">PORTFOLIO</a>
+            <a href="{{ url_for('main.about') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">ABOUT</a>
+            <a href="{{ url_for('main.contact') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">CONTACT</a>
+            <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20your%20furniture."
+               target="_blank" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-medium">
+                Chat on WhatsApp
+            </a>
+        </nav>
+    </aside>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="max-w-2xl mx-auto mt-4 px-4">
+                {% for category, message in messages %}
+                    <div class="p-3 mb-2 rounded text-sm {{ 'bg-red-50 text-red-700' if category == 'error' else 'bg-navy/5 text-navy' }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-navy text-white">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-2 text-xs">
+            <span class="font-display italic text-sm">Levvi's Furniture</span>
+            <div class="flex items-center gap-4 text-white/70">
+                <a href="{{ url_for('products.list_products') }}" class="hover:text-white">Products</a>
+                <a href="{{ url_for('main.portfolio') }}" class="hover:text-white">Portfolio</a>
+                <a href="{{ url_for('main.contact') }}" class="hover:text-white">Contact</a>
+                <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20your%20furniture."
+                   target="_blank" class="hover:text-white">WhatsApp</a>
+            </div>
+            <p class="text-white/40">&copy; 2026 Levvi's Furniture</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMobileNav() {
+            const drawer = document.getElementById('mobile-drawer');
+            const overlay = document.getElementById('mobile-overlay');
+            const links = document.querySelectorAll('.drawer-link');
+            const isOpen = !drawer.classList.contains('-translate-x-full');
+
+            if (isOpen) {
+                drawer.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                links.forEach(link => link.classList.remove('drawer-link-visible'));
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+                document.body.style.overflow = '';
+            } else {
+                overlay.classList.remove('hidden');
+                requestAnimationFrame(() => overlay.classList.remove('opacity-0'));
+                drawer.classList.remove('-translate-x-full');
+                document.body.style.overflow = 'hidden';
+
+                links.forEach((link, i) => {
+                    setTimeout(() => link.classList.add('drawer-link-visible'), 120 + i * 45);
+                });
+            }
+        }
+
+        window.addEventListener('scroll', () => {
+            const header = document.getElementById('site-header');
+            if (window.scrollY > 20) header.classList.add('scrolled');
+            else header.classList.remove('scrolled');
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const items = document.querySelectorAll('.reveal');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('revealed');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.15 });
+                items.forEach(item => observer.observe(item));
+            } else {
+                items.forEach(item => item.classList.add('revealed'));
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+{% extends 'admin/base.html' %}
+{% block title %}Manage Products{% endblock %}
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="flex justify-between items-center mt-4 mb-6">
+        <h1 class="text-2xl">Manage Products</h1>
+        <a href="{{ url_for('admin.add_product') }}"
+           class="bg-navy text-white px-4 py-2 rounded-full text-sm hover:bg-navy/90 transition">
+            + Add Product
+        </a>
+    </div>
+
+    <div class="bg-white rounded-lg overflow-hidden">
+        <table class="w-full text-sm">
+            <thead class="bg-navy/5 text-left">
+                <tr>
+                    <th class="p-3">Name</th>
+                    <th class="p-3">Category</th>
+                    <th class="p-3">Price</th>
+                    <th class="p-3">Available</th>
+                    <th class="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr class="border-t border-navy/10">
+                    <td class="p-3">{{ product.name }}</td>
+                    <td class="p-3">{{ product.category.name }}</td>
+                    <td class="p-3">{{ 'K%.2f' | format(product.price) if product.price else '—' }}</td>
+                    <td class="p-3">
+                        {% if product.is_available %}
+                            <span class="text-navy">Yes</span>
+                        {% else %}
+                            <span class="text-navy">No</span>
+                        {% endif %}
+                    </td>
+                    <td class="p-3 flex gap-3">
+                        <a href="{{ url_for('admin.edit_product', product_id=product.id) }}" class="text-navy hover:underline">Edit</a>
+                        <a href="{{ url_for('admin.manage_product_images', product_id=product.id) }}" class="text-navy hover:underline">Images</a>
+                        <form method="POST" action="{{ url_for('admin.delete_product', product_id=product.id) }}"
+                              onsubmit="return confirm('Delete this product?');">
+                            <button type="submit" class="text-red-500 hover:underline">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="5" class="p-6 text-center text-navy/30">No products yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

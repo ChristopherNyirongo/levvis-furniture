@@ -1,0 +1,25 @@
+{% extends 'admin/base.html' %}
+{% block title %}Customer messages{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-10">
+    <h1 class="text-2xl mt-4 mb-6">Customer messages</h1>
+
+    <div class="space-y-4">
+        {% for msg in messages %}
+        <div class="bg-white rounded-lg p-5">
+            <div class="flex justify-between items-start mb-2">
+                <p class="font-medium">{{ msg.name }}</p>
+                <p class="text-xs text-navy/40">{{ msg.date.strftime('%d %b %Y, %I:%M %p') }}</p>
+            </div>
+            <p class="text-sm text-navy/50 mb-2">
+                {% if msg.email %}{{ msg.email }}{% endif %}
+                {% if msg.phone_number %} &middot; {{ msg.phone_number }}{% endif %}
+            </p>
+            <p class="text-sm text-navy/70">{{ msg.message }}</p>
+        </div>
+        {% else %}
+        <p class="text-center text-navy/30 py-10">No messages yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
