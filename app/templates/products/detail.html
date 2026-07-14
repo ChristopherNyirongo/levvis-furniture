@@ -30,12 +30,12 @@
                             <div class="gallery-error hidden absolute inset-0 flex items-center justify-center text-navy/30 text-sm">
                                 Image unavailable
                             </div>
-                            <button onclick="openLightbox({{ loop.index0 }})" class="absolute inset-0">
+                            <button onclick="openLightbox({{ loop.index0 }})" class="absolute inset-0 flex items-center justify-center p-6">
                                 <img src="{{ img_url }}" alt="{{ product.name }} — image {{ loop.index }}"
                                      decoding="async"
                                      onload="this.closest('.gallery-slide').querySelector('.gallery-loader').classList.add('hidden'); this.classList.remove('opacity-0');"
                                      onerror="this.closest('.gallery-slide').querySelector('.gallery-loader').classList.add('hidden'); this.closest('.gallery-slide').querySelector('.gallery-error').classList.remove('hidden'); this.classList.add('hidden');"
-                                     class="w-full h-full object-cover opacity-0 transition-opacity duration-300 relative z-10">
+                                     class="max-w-full max-h-full object-contain opacity-0 transition-opacity duration-300 relative z-10">
                             </button>
                         </div>
                         {% endfor %}
