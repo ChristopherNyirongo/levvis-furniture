@@ -7,11 +7,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
     <style>
-        h1, h2, h3 { font-family: 'Fraunces', serif; }
+        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
         ::selection { background-color: #0A1024; color: #FFFFFF; }
 
         #site-header { transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease; }
@@ -21,7 +21,7 @@
             box-shadow: 0 1px 0 rgba(10, 16, 36, 0.08);
         }
 
-        .nav-link { position: relative; }
+        .nav-link { position: relative; font-weight: 500; }
         .nav-link::after {
             content: ''; position: absolute; left: 0; bottom: -4px;
             width: 0; height: 1px; background-color: #0A1024;
@@ -82,7 +82,7 @@
 
             <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20your%20furniture."
                target="_blank"
-               class="text-sm bg-navy text-white rounded-full px-5 py-2 hover:bg-navy/90 transition">
+               class="text-sm font-semibold bg-navy text-white rounded-full px-5 py-2 hover:bg-navy/90 transition">
                 Chat on WhatsApp
             </a>
         </div>
@@ -102,13 +102,13 @@
             </button>
         </div>
         <nav class="flex-grow px-4 py-6 space-y-1 text-sm">
-            <a href="{{ url_for('main.home') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">HOME</a>
-            <a href="{{ url_for('products.list_products') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">PRODUCTS</a>
-            <a href="{{ url_for('main.portfolio') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">PORTFOLIO</a>
-            <a href="{{ url_for('main.about') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">ABOUT</a>
-            <a href="{{ url_for('main.contact') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10">CONTACT</a>
+            <a href="{{ url_for('main.home') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-medium">HOME</a>
+            <a href="{{ url_for('products.list_products') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-medium">PRODUCTS</a>
+            <a href="{{ url_for('main.portfolio') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-medium">PORTFOLIO</a>
+            <a href="{{ url_for('main.about') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-medium">ABOUT</a>
+            <a href="{{ url_for('main.contact') }}" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-medium">CONTACT</a>
             <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%27m%20interested%20in%20your%20furniture."
-               target="_blank" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-medium">
+               target="_blank" class="drawer-link block px-2 py-2.5 rounded-lg hover:bg-white/10 font-semibold">
                 Chat on WhatsApp
             </a>
         </nav>
@@ -133,7 +133,7 @@
     <footer class="bg-navy text-white">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-2 text-xs">
             <span class="font-display italic text-sm">Levvi's Furniture</span>
-            <div class="flex items-center gap-4 text-white/70">
+            <div class="flex items-center gap-4 text-white/70 font-medium">
                 <a href="{{ url_for('products.list_products') }}" class="hover:text-white">Products</a>
                 <a href="{{ url_for('main.portfolio') }}" class="hover:text-white">Portfolio</a>
                 <a href="{{ url_for('main.contact') }}" class="hover:text-white">Contact</a>

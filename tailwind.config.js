@@ -9,10 +9,8 @@ module.exports = {
         navy: '#0A1024',
       },
       fontFamily: {
-        sans: ['"Work Sans"', 'sans-serif'],
-        display: ['Fraunces', 'serif'],
-        'admin-sans': ['Inter', 'sans-serif'],
-        'admin-display': ['"Space Grotesk"', 'sans-serif'],
+        sans: ['Manrope', 'sans-serif'],
+        display: ['"Space Grotesk"', 'sans-serif'],
       }
     },
   },

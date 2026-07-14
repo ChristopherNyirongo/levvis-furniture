@@ -15,7 +15,7 @@
         <div class="break-inside-avoid reveal" style="transition-delay: {{ loop.index0 * 80 }}ms">
 
             <!-- Before/After Slider -->
-            <div class="relative overflow-hidden select-none ba-slider" data-project="{{ project.id }}">
+            <div class="relative overflow-hidden select-none ba-slider rounded-xl" data-project="{{ project.id }}">
                 <div class="relative h-72 md:h-80">
                     {% if project.after_image %}
                     <img src="{{ project.after_image }}" class="absolute inset-0 w-full h-full object-cover" draggable="false">

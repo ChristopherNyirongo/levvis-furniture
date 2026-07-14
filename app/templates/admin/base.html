@@ -7,7 +7,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
     <style>
@@ -22,6 +22,7 @@
             color: rgba(255,255,255,0.85);
             border-left: 3px solid transparent;
             border-radius: 0 0.5rem 0.5rem 0;
+            font-weight: 500;
             transition: background-color 0.25s ease-in-out,
                         color 0.25s ease-in-out,
                         transform 0.25s ease-in-out,
@@ -33,16 +34,12 @@
             transform: translateX(3px);
             border-radius: 0 0.75rem 0.75rem 0;
         }
-        .admin-nav-link:hover .nav-icon {
-            transform: translateX(3px) scale(1.05);
-        }
         .admin-nav-link.active {
             background-color: transparent;
             border-left-color: #FFFFFF;
-            font-weight: 600;
+            font-weight: 700;
             color: #FFFFFF;
         }
-        .nav-icon { transition: transform 0.25s ease-in-out; display: inline-block; }
 
         .drawer-link {
             opacity: 0;
@@ -53,7 +50,6 @@
             opacity: 1;
             transform: translateX(0);
         }
-        /* Skip animation entirely once already played this session */
         .no-animate.drawer-link {
             opacity: 1;
             transform: translateX(0);
@@ -63,7 +59,7 @@
         .admin-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
         .admin-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(10,16,36,0.08); }
 
-        .admin-btn { transition: transform 0.15s ease, background-color 0.2s ease; }
+        .admin-btn { transition: transform 0.15s ease, background-color 0.2s ease; font-weight: 600; }
         .admin-btn:active { transform: scale(0.97); }
 
         input, select, textarea { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
@@ -84,7 +80,7 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .toast { animation: toast-in-mobile 0.3s ease; }
+        .toast { animation: toast-in-mobile 0.3s ease; font-weight: 500; }
         @media (min-width: 768px) {
             .toast { animation: toast-in-desktop 0.3s ease; }
         }
@@ -213,7 +209,6 @@
                 sidebar.classList.remove('-translate-x-full');
                 document.body.style.overflow = 'hidden';
 
-                // Mobile drawer open always animates, per spec
                 links.forEach(link => link.classList.remove('no-animate', 'drawer-link-visible'));
                 staggerNavLinks();
             }
@@ -225,15 +220,12 @@
 
             if (isDesktop) {
                 if (alreadyAnimated) {
-                    // Subsequent page loads this session: show instantly, no replay
                     showNavLinksInstantly();
                 } else {
-                    // First load this session: play the cascade once
                     staggerNavLinks();
                     sessionStorage.setItem('sidebarAnimated', 'true');
                 }
             }
-            // On mobile, links start hidden until the drawer is opened (handled by toggleAdminSidebar)
         });
 
         (function() {

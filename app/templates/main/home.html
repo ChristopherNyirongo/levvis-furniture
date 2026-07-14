@@ -36,7 +36,7 @@
         {% for product in featured_products %}
         <a href="{{ url_for('products.product_detail', product_id=product.id) }}"
            class="reveal group" style="transition-delay: {{ loop.index0 * 80 }}ms">
-            <div class="aspect-square overflow-hidden">
+            <div class="aspect-square overflow-hidden rounded-xl">
                 {% if product.featured_image %}
                     <img src="{{ product.featured_image }}" alt="{{ product.name }}"
                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
@@ -70,7 +70,7 @@
         </div>
 
         <div class="reveal grid grid-cols-1 md:grid-cols-2 gap-1">
-            <div class="relative h-72 overflow-hidden">
+           <div class="relative h-72 overflow-hidden rounded-xl">
                 <span class="absolute top-4 left-4 text-[10px] tracking-[0.15em] bg-navy text-white px-3 py-1 rounded-full z-10">BEFORE</span>
                 {% if featured_project.before_image %}
                 <img src="{{ featured_project.before_image }}" class="w-full h-full object-cover">
@@ -78,7 +78,7 @@
                 <div class="w-full h-full flex items-center justify-center text-navy/20 text-sm">No Image</div>
                 {% endif %}
             </div>
-            <div class="relative h-72 overflow-hidden">
+            <div class="relative h-72 overflow-hidden rounded-xl">
                 <span class="absolute top-4 left-4 text-[10px] tracking-[0.15em] bg-navy text-white px-3 py-1 rounded-full z-10">AFTER</span>
                 {% if featured_project.after_image %}
                 <img src="{{ featured_project.after_image }}" class="w-full h-full object-cover">

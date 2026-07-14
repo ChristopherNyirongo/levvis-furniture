@@ -109,7 +109,7 @@
                 {% for product in products %}
                 <div class="reveal group" style="transition-delay: {{ loop.index0 * 60 }}ms">
                     <a href="{{ url_for('products.product_detail', product_id=product.id) }}" class="block relative">
-                        <div class="aspect-square relative overflow-hidden">
+                        <div class="aspect-square relative overflow-hidden rounded-xl">
                             {% if product.featured_image %}
                                 <img src="{{ product.featured_image }}" alt="{{ product.name }}"
                                      class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">

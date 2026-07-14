@@ -7,22 +7,12 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: { navy: '#0A1024' },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['"Space Grotesk"', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
+    <style>
+        h1 { font-family: 'Space Grotesk', sans-serif; }
+    </style>
 </head>
 <body class="font-sans bg-white text-navy min-h-screen flex items-center justify-center px-4 py-16">
 
@@ -84,7 +74,7 @@
                 </div>
 
                 <button type="submit" id="submit-btn"
-                        class="w-full bg-navy text-white py-3.5 rounded-xl font-medium hover:bg-navy/90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
+                        class="w-full bg-navy text-white py-3.5 rounded-xl font-semibold hover:bg-navy/90 active:scale-[0.98] transition-all flex items-center justify-center gap-2">
                     <svg id="btn-spinner" class="hidden animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
@@ -96,7 +86,7 @@
 
         <div class="text-center mt-8">
             <p class="text-xs text-navy/40">&copy; 2026 Levvi's Furniture. All Rights Reserved.</p>
-            <p class="text-xs text-navy/30 mt-1">Handcrafted Furniture & Interior Design</p>
+            <p class="text-xs text-navy/30 mt-1">Handcrafted Furniture &amp; Interior Design</p>
         </div>
     </div>
 
@@ -109,7 +99,7 @@
             </p>
             <a href="https://wa.me/{{ whatsapp_number }}?text=Hello%2C%20I%20need%20help%20accessing%20my%20admin%20account."
                target="_blank"
-               class="block bg-navy text-white py-3 rounded-xl font-medium hover:bg-navy/90 transition mb-3">
+               class="block bg-navy text-white py-3 rounded-xl font-semibold hover:bg-navy/90 transition mb-3">
                 Contact via WhatsApp
             </a>
             <button onclick="document.getElementById('forgot-modal').classList.add('hidden')"
