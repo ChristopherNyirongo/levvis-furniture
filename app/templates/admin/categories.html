@@ -19,8 +19,8 @@
                 <span class="font-medium">{{ category.name }}</span>
                 <span class="text-xs text-navy/40 ml-2">({{ category.products | length }} products)</span>
             </div>
-            <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}"
-                  onsubmit="return confirm('Delete this category?');">
+           <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}"
+                  onsubmit="return confirmDelete(this, 'Delete this category? This action cannot be undone.');">
                 <button type="submit" class="text-red-500 text-sm hover:underline">Delete</button>
             </form>
         </div>

@@ -35,7 +35,7 @@
             <div class="p-2">
                 <p class="text-xs text-navy/50">{{ img.category }}</p>
                 <form method="POST" action="{{ url_for('admin.delete_gallery_image', image_id=img.id) }}"
-                      onsubmit="return confirm('Remove this image?');">
+                      onsubmit="return confirmDelete(this, 'Remove this image?');">
                     <button type="submit" class="text-xs text-red-500 hover:underline mt-1">Delete</button>
                 </form>
             </div>

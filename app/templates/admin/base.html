@@ -72,7 +72,7 @@
         tbody tr { transition: background-color 0.15s ease; }
         tbody tr:hover { background-color: rgba(10,16,36,0.03); }
 
-        @keyframes toast-in-desktop {
+       @keyframes toast-in-desktop {
             from { opacity: 0; transform: translateX(20px); }
             to { opacity: 1; transform: translateX(0); }
         }
@@ -80,10 +80,19 @@
             from { opacity: 0; transform: translateY(-20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .toast { animation: toast-in-mobile 0.3s ease; font-weight: 500; }
+        .toast {
+            animation: toast-in-mobile 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
         @media (min-width: 768px) {
             .toast { animation: toast-in-desktop 0.3s ease; }
         }
+
+        #confirm-modal { transition: opacity 0.2s ease; }
+        #confirm-modal-box { transition: transform 0.2s ease, opacity 0.2s ease; }
     </style>
 </head>
 <body class="font-sans bg-gray-50 text-navy flex">
@@ -150,6 +159,26 @@
 
     <div id="toast-container" class="fixed top-4 inset-x-4 md:inset-x-auto md:right-6 md:top-6 z-[60] space-y-2"></div>
 
+    <!-- Delete Confirmation Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 bg-navy/50 z-[70] flex items-center justify-center px-4 opacity-0">
+        <div id="confirm-modal-box" class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full opacity-0 scale-95">
+            <h3 class="font-display font-semibold text-lg mb-2">Confirm Deletion</h3>
+            <p id="confirm-modal-message" class="text-sm text-navy/60 mb-6">
+                Are you sure you want to delete this item? This action cannot be undone.
+            </p>
+            <div class="flex gap-3">
+                <button onclick="closeConfirmModal()"
+                        class="flex-1 border border-navy/20 rounded-xl py-2.5 text-sm font-medium hover:bg-navy/5 transition">
+                    Cancel
+                </button>
+                <button onclick="proceedDelete()"
+                        class="flex-1 bg-red-600 text-white rounded-xl py-2.5 text-sm font-semibold hover:bg-red-700 transition">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     <script>
@@ -164,18 +193,56 @@
     {% endwith %}
 
     <script>
-        function showToast(message, category) {
+       function showToast(message, category) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
             const isError = category === 'error';
-            toast.className = `toast px-4 py-3 rounded-xl shadow-lg text-sm font-medium ${isError ? 'bg-red-600 text-white' : 'bg-navy text-white'}`;
-            toast.textContent = message;
+
+            const icon = isError
+                ? '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>'
+                : '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>';
+
+            toast.className = `toast px-4 py-3 rounded-xl shadow-xl text-sm font-medium ${isError ? 'bg-red-600 text-white' : 'bg-navy text-white'}`;
+            toast.innerHTML = icon + `<span>${message}</span>`;
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.3s ease';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+                toast.style.transform = 'translateY(-8px)';
+                toast.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+                setTimeout(() => toast.remove(), 250);
+            }, 2200);
+        }
+
+        let pendingDeleteForm = null;
+
+        function confirmDelete(form, message) {
+            pendingDeleteForm = form;
+            document.getElementById('confirm-modal-message').textContent =
+                message || 'Are you sure you want to delete this item? This action cannot be undone.';
+            const modal = document.getElementById('confirm-modal');
+            const box = document.getElementById('confirm-modal-box');
+            modal.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0');
+                box.classList.remove('opacity-0', 'scale-95');
+            });
+            return false;
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirm-modal');
+            const box = document.getElementById('confirm-modal-box');
+            modal.classList.add('opacity-0');
+            box.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 200);
+            pendingDeleteForm = null;
+        }
+
+        function proceedDelete() {
+            if (pendingDeleteForm) {
+                pendingDeleteForm.submit();
+            }
+            closeConfirmModal();
         }
 
         function staggerNavLinks() {
