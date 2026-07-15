@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required
-from app.models import Product, Category, QuoteRequest, ContactMessage
+from app.models import Product, Category, QuoteRequest, ContactMessage, GalleryImage, Project, ProductImage, Testimonial
 from app.extensions import db
 import os
 from werkzeug.utils import secure_filename
