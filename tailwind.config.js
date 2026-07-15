@@ -10,7 +10,9 @@ module.exports = {
       },
       fontFamily: {
         sans: ['Manrope', 'sans-serif'],
-        display: ['"Space Grotesk"', 'sans-serif'],
+        display: ['"Playfair Display"', 'serif'],
+        'admin-sans': ['Manrope', 'sans-serif'],
+        'admin-display': ['"Space Grotesk"', 'sans-serif'],
       }
     },
   },

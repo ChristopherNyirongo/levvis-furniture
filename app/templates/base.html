@@ -7,11 +7,11 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/output.css') }}">
     <style>
-        h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
         ::selection { background-color: #0A1024; color: #FFFFFF; }
 
         #site-header { transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease; }
@@ -66,8 +66,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
                 </button>
-                <a href="{{ url_for('main.home') }}"
-                   class="font-display text-lg italic border border-navy/20 rounded-full px-4 py-1.5">
+               <a href="{{ url_for('main.home') }}"
+                   class="font-display text-lg font-semibold border border-navy/20 rounded-full px-4 py-1.5">
                     Levvi's
                 </a>
             </div>
@@ -94,7 +94,7 @@
     <aside id="mobile-drawer"
            class="fixed top-0 left-0 h-full w-72 bg-navy text-white z-50 -translate-x-full md:hidden flex flex-col">
         <div class="flex items-center justify-between px-6 py-5 border-b border-white/10">
-            <span class="font-display text-lg italic">Levvi's Furniture</span>
+            <span class="font-display text-lg font-semibold">Levvi's Furniture</span>
             <button onclick="toggleMobileNav()" class="text-white/70 hover:text-white" aria-label="Close menu">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -132,7 +132,7 @@
 
     <footer class="bg-navy text-white">
         <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-2 text-xs">
-            <span class="font-display italic text-sm">Levvi's Furniture</span>
+            <span class="font-display font-semibold text-sm">Levvi's Furniture</span>
             <div class="flex items-center gap-4 text-white/70 font-medium">
                 <a href="{{ url_for('products.list_products') }}" class="hover:text-white">Products</a>
                 <a href="{{ url_for('main.portfolio') }}" class="hover:text-white">Portfolio</a>
