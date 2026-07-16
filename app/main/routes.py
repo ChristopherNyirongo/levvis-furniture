@@ -1,5 +1,8 @@
 from flask import Blueprint, render_template
 from app.models import Product, Testimonial, Project, Category
+from flask import send_from_directory
+from flask import current_app
+
 
 main_bp = Blueprint('main', __name__, template_folder='../templates/main')
 
@@ -26,3 +29,7 @@ def contact():
 def portfolio():
     projects = Project.query.order_by(Project.date_created.desc()).all()
     return render_template('main/portfolio.html', projects=projects)
+
+@main_bp.route('/uploads/<path:filename>')
+def serve_upload(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)

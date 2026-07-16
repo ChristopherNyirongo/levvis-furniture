@@ -31,7 +31,7 @@ def save_uploaded_image(file):
             counter += 1
 
         file.save(upload_path)
-        return f"/static/uploads/{filename}"
+        return f"/uploads/{filename}"
     return None
 
 
