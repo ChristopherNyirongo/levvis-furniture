@@ -14,14 +14,15 @@
 
     <div class="bg-white rounded-lg divide-y divide-navy/10">
         {% for category in categories %}
-        <div class="flex justify-between items-center p-4">
-            <div>
-                <span class="font-medium">{{ category.name }}</span>
-                <span class="text-xs text-navy/40 ml-2">({{ category.products | length }} products)</span>
+        <div class="flex justify-between items-center gap-3 p-4">
+            <div class="min-w-0">
+                <span class="font-medium truncate block">{{ category.name }}</span>
+                <span class="text-xs text-navy/40">({{ category.products | length }} products)</span>
             </div>
-           <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}"
-                  onsubmit="return confirmDelete(this, 'Delete this category? This action cannot be undone.');">
-                <button type="submit" class="text-red-500 text-sm hover:underline">Delete</button>
+            <form method="POST" action="{{ url_for('admin.delete_category', category_id=category.id) }}"
+                  onsubmit="return confirmDelete(this, 'Delete this category? This action cannot be undone.');"
+                  class="flex-shrink-0">
+                <button type="submit" class="text-red-500 text-sm font-medium hover:underline whitespace-nowrap">Delete</button>
             </form>
         </div>
         {% else %}
