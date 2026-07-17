@@ -2,6 +2,7 @@
 {% block title %}Manage Categories{% endblock %}
 {% block content %}
 <div class="max-w-2xl mx-auto px-4 py-10">
+    <a href="{{ url_for('admin.dashboard') }}" class="text-sm text-navy/50 hover:underline">&larr; Dashboard</a>
     <h1 class="text-2xl mt-4 mb-6">Manage Categories</h1>
 
     <form method="POST" action="{{ url_for('admin.add_category') }}" class="flex gap-2 mb-8">

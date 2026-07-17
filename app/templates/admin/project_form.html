@@ -2,6 +2,11 @@
 {% block title %}{{ 'Edit' if project else 'Add' }} Project{% endblock %}
 {% block content %}
 <div class="max-w-xl mx-auto px-4 py-10">
+    <div class="flex items-center gap-2 text-sm text-navy/50">
+        <a href="{{ url_for('admin.dashboard') }}" class="hover:underline">Dashboard</a>
+        <span>/</span>
+        <a href="{{ url_for('admin.manage_portfolio') }}" class="hover:underline">Portfolio</a>
+    </div>
     <h1 class="text-2xl mt-4 mb-6">{{ 'Edit' if project else 'Add' }} Project</h1>
 
     <form method="POST" enctype="multipart/form-data" class="bg-white rounded-lg p-6 space-y-4">
