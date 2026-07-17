@@ -19,3 +19,5 @@ class Config:
     UPLOAD_FOLDER = os.path.join(DATA_DIR, 'uploads')
     MAX_CONTENT_LENGTH = 5 * 1024 * 1024  # 5MB max upload size
     WHATSAPP_NUMBER = os.environ.get('WHATSAPP_NUMBER', '260979369001')
+    MAIL_ADDRESS = os.environ.get('MAIL_ADDRESS')
+    MAIL_APP_PASSWORD = os.environ.get('MAIL_APP_PASSWORD')

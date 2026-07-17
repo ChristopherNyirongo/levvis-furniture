@@ -67,10 +67,10 @@
                         <input type="checkbox" name="remember" class="rounded border-navy/20">
                         Remember me
                     </label>
-                    <button type="button" onclick="document.getElementById('forgot-modal').classList.remove('hidden')"
-                            class="text-sm text-navy/60 hover:text-navy hover:underline">
+                    <a href="{{ url_for('auth.forgot_password') }}"
+                       class="text-sm text-navy/60 hover:text-navy hover:underline">
                         Forgot password?
-                    </button>
+                    </a>
                 </div>
 
                 <button type="submit" id="submit-btn"
